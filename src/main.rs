@@ -55,7 +55,7 @@ impl Root {
         child.unwrap().add_child('\0');
     }
 
-    pub fn exists(&self, value: String) -> bool {
+    pub fn exists(&self, value: &String) -> bool {
         let mut node: Option<&Node> = None;
         for index_char in value.char_indices(){
             if node.is_none() && index_char.0 == 0 {
@@ -77,15 +77,15 @@ impl Root {
 
 
 fn main() {
-    println!("Hello, world!");
+    println!("EY YOO, FUCK OFF MAN, RUN TESTS FIRSTLY!");
 }
 
 #[cfg(test)]
-mod tests {
-    use crate::*;
+mod node_tests {
+    use crate::Node;
 
     #[test]
-    fn it_should_create_tree() {
+    fn it_should_create_node() {
         // Arrange
         let value: char = 'a';
         let node: Node = Node::new(value);
@@ -112,15 +112,20 @@ mod tests {
         assert_eq!(1, node.children.len());
         assert_eq!(true, node.children.contains_key(&value))
     }
+}
+
+#[cfg(test)]
+mod root_tests {
+    use crate::Root;
 
     #[test]
     fn it_should_exist() {
         // Arrange
-        let word = String::from("Test");
+        let word = String::from("test");
         let tree = Root::new(&word);
 
         // Act
-        let result: bool = tree.exists(word);
+        let result: bool = tree.exists(&word);
 
         // Assert
         assert_eq!(result, true);
@@ -129,12 +134,27 @@ mod tests {
     #[test]
     fn it_should_not_exist() {
         // Arrange
-        let word = String::from("Test");
-        let another_word = String::from("Tes");
+        let word = String::from("test");
+        let another_word = String::from("tes");
         let tree = Root::new(&word);
 
         // Act
-        let result: bool = tree.exists(another_word);
+        let result: bool = tree.exists(&another_word);
+
+        // Assert
+        assert_eq!(result, false);
+
+    }
+
+    #[test]
+    fn it_should_return_false_with_longer_word() {
+        // Arrange
+        let word = String::from("test");
+        let another_word = String::from("tester");
+        let tree = Root::new(&word);
+
+        // Act
+        let result: bool = tree.exists(&another_word);
 
         // Assert
         assert_eq!(result, false);
