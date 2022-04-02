@@ -1,5 +1,10 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    path::Path,
+    env
+};
 
+#[derive(Debug)]
 struct Node {
     children: HashMap<char, Node>,
     data: char,
@@ -28,6 +33,14 @@ impl Node {
 
 }
 
+impl Default for Root {
+    fn default() -> Root {
+        Root {
+            children: HashMap::new()
+        }
+    }
+}
+
 impl Root {
     pub fn new(value: &String) -> Self {
         let mut instance = Self {
@@ -45,13 +58,14 @@ impl Root {
         let mut child: Option<&mut Node> = None;
         for char_ in chars {
             if child.is_none() {
-                self.children.insert(char_, Node::new(char_));
+                if !self.children.contains_key(&char_) {
+                    self.children.insert(char_, Node::new(char_));
+                } 
                 child = self.children.get_mut(&char_);
             } else {
                 child = child.unwrap().add_child(char_);
             }
         }
-
         child.unwrap().add_child('\0');
     }
 
@@ -75,9 +89,36 @@ impl Root {
     }
 }
 
+fn load_words(root: &mut Root, path: impl AsRef<Path>) {
+    use std::{
+        fs::File,
+        io::{prelude::*, BufReader},
+    };
+    
+    let file = File::open(path).expect("No such file");
+    let buffer = BufReader::new(file);
+    let lines: Vec<String> = buffer.lines()
+        .map(
+            |line| line.expect("Could not parse line")
+        )
+        .collect();
+
+    println!("Loading words...");
+    for line in lines {
+        root.add_word(&line);
+    }
+    
+}
 
 fn main() {
-    println!("EY YOO, FUCK OFF MAN, RUN TESTS FIRSTLY!");
+    let args: Vec<String> = env::args().collect();
+    let path: &Path = Path::new(&args[1]);
+    let word = &args[2];
+    let mut root = Root::default();
+
+    load_words(&mut root, &path);
+
+    println!("Word[{}] - {}", word, root.exists(&word));
 }
 
 #[cfg(test)]
