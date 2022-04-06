@@ -8,6 +8,7 @@ use std::{
 struct Node {
     children: HashMap<char, Node>,
     data: char,
+    end_of_word: bool
 }
 
 struct Root {
@@ -19,6 +20,7 @@ impl Node {
         Self {
             children: HashMap::new(),
             data: value,
+            end_of_word: false
         }
     }
 
@@ -29,8 +31,12 @@ impl Node {
         }
 
         return self.children.get_mut(&value)
+        
     }
-
+    
+    pub fn set_end_of_word(&mut self) {
+        self.end_of_word = true;
+    }
 }
 
 impl Default for Root {
@@ -66,7 +72,7 @@ impl Root {
                 child = child.unwrap().add_child(char_);
             }
         }
-        child.unwrap().add_child('\0');
+        child.unwrap().set_end_of_word();
     }
 
     pub fn exists(&self, value: &String) -> bool {
@@ -82,9 +88,9 @@ impl Root {
         }
 
         if node.is_none() {
-            return false
+            false
         } else {
-            return !node.unwrap().children.get(&'\0').is_none()
+            node.unwrap().end_of_word
         }
     }
 }
@@ -97,16 +103,12 @@ fn load_words(root: &mut Root, path: impl AsRef<Path>) {
     
     let file = File::open(path).expect("No such file");
     let buffer = BufReader::new(file);
-    let lines: Vec<String> = buffer.lines()
-        .map(
-            |line| line.expect("Could not parse line")
-        )
-        .collect();
 
     println!("Loading words...");
-    for line in lines {
-        root.add_word(&line);
+    for line in buffer.lines() {
+        root.add_word(&line.unwrap());
     }
+    println!("Loading completed!")
     
 }
 

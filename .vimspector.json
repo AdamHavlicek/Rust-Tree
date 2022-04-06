@@ -1,0 +1,19 @@
+{
+  "configurations": {
+    "Rust - Test": {
+      "adapter": "CodeLLDB",
+      "configuration": {
+        "request": "launch",
+        "program": "${Executable}",
+        "args": ["*${Args}"],
+        "sourceLanguages": ["rust"]
+      },
+      "breakpoints": {
+        "exceptions": {
+          "cpp_throw": "Y",
+          "cpp_catch": "N"
+        }
+      }
+    }
+  }
+}
