@@ -1,10 +1,8 @@
-use std::{
-    collections::HashMap,
+use std::{ collections::HashMap,
     path::Path,
     env
 };
 
-#[derive(Debug)]
 struct Node {
     children: HashMap<char, Node>,
     data: char,

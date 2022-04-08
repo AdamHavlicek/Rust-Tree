@@ -1,10 +1,11 @@
 {
   "configurations": {
-    "Rust - Test": {
+    "rust - lldb": {
       "adapter": "CodeLLDB",
+      "filetypes": ["rust"],
       "configuration": {
         "request": "launch",
-        "program": "${Executable}",
+        "program": "${workspaceRoot}/target/debug/tree",
         "args": ["*${Args}"],
         "sourceLanguages": ["rust"]
       },
